@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Renderer</title>
+    <style>
+        .task-container {
+            padding: 20px;
+        }
+
+        .asset-container {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .play-button {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="task-container" class="task-container"></div>
+
+
+</body>
+<script>
+    const task = {
+        "task_id": 18882,
+        "task_title": "Explore the world of management",
+        "task_description": "As a project manager, you play an important role...",
+        "status": "notworkyet",
+        "assets": [
+            {
+                "asset_id": 18883,
+                "asset_title": "Technical Project Management",
+                "asset_description": "Story of Alignment...",
+                "asset_content": "https://www.youtube.com/embed/TiMRwri1xJ8",
+                "asset_type": "display_asset",
+                "asset_content_type": "video"
+            },
+            {
+                "asset_id": 18884,
+                "asset_title": "Threadbuild",
+                "asset_description": "Watch the video and thread build...",
+                "asset_content": " ",
+                "asset_type": "input_asset",
+                "asset_content_type": "threadbuilder"
+            },
+            {
+                "asset_id": 18885,
+                "asset_title": "Structure you pointers",
+                "asset_description": "Write a 400-500 word article...",
+                "asset_content": " ",
+                "asset_type": "input_asset",
+                "asset_content_type": "article"
+            },
+            {
+                "asset_id": 18886,
+                "asset_title": "4SA Method",
+                "asset_description": "To explore more read more",
+                "asset_content": "https://dtthon.deepthought.education/sharer?id=01aa3cff-db8e-8d9d-afc0-1671715937878",
+                "asset_type": "display_asset",
+                "asset_content_type": "article"
+            }
+        ]
+    };
+
+    // Function to create an asset container
+    function createAssetContainer(asset) {
+        const container = document.createElement('div');
+        container.className = 'asset-container';
+
+        const title = document.createElement('h3');
+        title.textContent = asset.asset_title;
+        container.appendChild(title);
+
+        const description = document.createElement('p');
+        description.textContent = asset.asset_description;
+        container.appendChild(description);
+
+        if (asset.asset_content_type === 'video') {
+            const videoThumbnail = document.createElement('div');
+            videoThumbnail.className = 'video-thumbnail';
+            videoThumbnail.style.position = 'relative';
+            videoThumbnail.style.backgroundImage = `url(https://img.youtube.com/vi/${getYouTubeVideoID(asset.asset_content)}/hqdefault.jpg)`;
+            videoThumbnail.style.backgroundSize = 'cover';
+            videoThumbnail.style.width = '560px';
+            videoThumbnail.style.height = '315px';
+            videoThumbnail.style.cursor = 'pointer';
+
+            const playButton = document.createElement('img');
+            playButton.src = 'https://upload.wikimedia.org/wikipedia/commons/7/75/YouTube_social_white_circle_%282017%29.svg';
+            playButton.style.width = '60px';
+            playButton.style.height = '60px';
+            playButton.style.position = 'absolute';
+            playButton.style.top = '50%';
+            playButton.style.left = '50%';
+            playButton.style.transform = 'translate(-50%, -50%)';
+
+            videoThumbnail.appendChild(playButton);
+
+            videoThumbnail.addEventListener('click', function () {
+                const iframe = document.createElement('iframe');
+                iframe.width = '560';
+                iframe.height = '315';
+                iframe.src = `${asset.asset_content}?autoplay=1`;
+                iframe.frameBorder = '0';
+                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                iframe.allowFullscreen = true;
+
+                container.replaceChild(iframe, videoThumbnail);
+            });
+
+            container.appendChild(videoThumbnail);
+        } else if (asset.asset_content_type === 'article') {
+            const link = document.createElement('a');
+            link.href = asset.asset_content;
+            link.target = '_blank';
+            link.textContent = 'Read more';
+            container.appendChild(link);
+        }
+
+        return container;
+    }
+
+    // Helper function to extract YouTube video ID from URL
+    function getYouTubeVideoID(url) {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+
+        return (match && match[2].length === 11) ? match[2] : null;
+    }
+
+    // Function to render the task and its assets
+    function renderTask(task) {
+        const taskContainer = document.getElementById('task-container');
+
+        const taskTitle = document.createElement('h2');
+        taskTitle.textContent = task.task_title;
+        taskContainer.appendChild(taskTitle);
+
+        const taskDescription = document.createElement('p');
+        taskDescription.textContent = task.task_description;
+        taskContainer.appendChild(taskDescription);
+
+        task.assets.forEach(asset => {
+            const assetContainer = createAssetContainer(asset);
+            taskContainer.appendChild(assetContainer);
+        });
+    }
+
+    // Render the task
+    renderTask(task);
+
+</script>
+
+</html>
